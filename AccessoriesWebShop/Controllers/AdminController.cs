@@ -15,7 +15,7 @@ namespace AccessoriesWebShop.Controllers
 		private accessoriesEntities db = new accessoriesEntities();
 		private AdsDao adsDao = new AdsDao();
 
-		[Authorize]
+		[Authorize(Roles = "Admin")]
 		// GET: Admin
 		public ActionResult Index()
 		{

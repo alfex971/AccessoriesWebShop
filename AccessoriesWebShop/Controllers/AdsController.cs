@@ -28,6 +28,7 @@ namespace AccessoriesWebShop.Controllers
 			return View(ads);
 		}
 
+		[Authorize(Roles = "Customer")]
 		[HttpPost]
 		public ActionResult SearchByString(string search)
 		{
