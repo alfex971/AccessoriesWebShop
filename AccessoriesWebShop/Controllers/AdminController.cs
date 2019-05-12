@@ -15,6 +15,7 @@ namespace AccessoriesWebShop.Controllers
 		private accessoriesEntities db = new accessoriesEntities();
 		private AdsDao adsDao = new AdsDao();
 
+		[Authorize]
 		// GET: Admin
 		public ActionResult Index()
 		{
@@ -22,6 +23,7 @@ namespace AccessoriesWebShop.Controllers
 			ViewBag.searched = "";
 			ViewBag.categoryID = 0;
 			ViewBag.isAdmin = true;
+			ViewBag.userEmail = User.Identity.Name;
             return View("~/Views/Ads/Index.cshtml", ads);
         }
 
