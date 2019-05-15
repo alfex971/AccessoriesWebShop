@@ -16,14 +16,15 @@ namespace AccessoriesWebShop.Controllers
 	{
 		private accessoriesEntities db = new accessoriesEntities();
 		private AdsDao adsDao = new AdsDao();
+        private BasketsDao basketsDao = new BasketsDao();
 
-		// GET: Ads
-		public ActionResult Index()
+        // GET: Ads
+        public ActionResult Index()
 		{
 			var ads = adsDao.GetAds();
 			ViewBag.searched = "";
 			ViewBag.categoryID = 0;
-			ViewData["filterName"] = "price(low - high)";
+            ViewData["filterName"] = "price(low - high)";
 
 			return View(ads);
 		}
@@ -169,5 +170,35 @@ namespace AccessoriesWebShop.Controllers
 			}
 			base.Dispose(disposing);
 		}
-	}
+
+        
+        public ActionResult AddToBasket(int userID = 1, string adName = "")
+        {
+            Basket basket = db.Baskets.FirstOrDefault(b => b.userID == userID && b.adName == adName);
+
+            if (basket != null)
+            {
+                basket.quantity += 1;
+                basketsDao.UpdateBasket(basket);
+            }
+            else
+            {
+                basket = new Basket();
+                basket.userID = userID;
+                basket.adName = adName;
+                basket.quantity = 1;
+
+                basketsDao.InsertBasket(basket);
+            }
+
+            //return RedirectToAction("AddToBasketPartial", new { id = userID });
+            return AddToBasketPartial(1);
+        }
+
+        public PartialViewResult AddToBasketPartial(short? id)
+        {
+            ViewBag.adsNum = basketsDao.getNumAdsBaskets(id);
+            return PartialView("AddToBasket");
+        }
+    }
 }
