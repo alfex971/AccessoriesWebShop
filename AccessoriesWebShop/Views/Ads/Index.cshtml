@@ -12,7 +12,7 @@
         @Html.ActionLink("Create New", "AdsCreate")
     </p>
 
-    using (Html.BeginForm("Filter", "Admin", FormMethod.Post, new {enctype = "multipart/form-data"}))
+    using (Html.BeginForm("Filter", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.DropDownList("Filter", new List<SelectListItem>
         {
@@ -21,12 +21,12 @@
             new SelectListItem {Text = "rating", Value = "rating" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "discount", Value = "discount" + " " + @ViewBag.searched + " " + @ViewBag.categoryID}
         }, "Filter by")
-        <input type="submit" value="Filter"/>
+        <input type="submit" value="Filter" />
     }
 }
 else
 {
-    using (Html.BeginForm("Filter", "Ads", FormMethod.Post, new {enctype = "multipart/form-data"}))
+    using (Html.BeginForm("Filter", "Ads", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.DropDownList("Filter", new List<SelectListItem>
         {
@@ -35,8 +35,25 @@ else
             new SelectListItem {Text = "rating", Value = "rating" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "discount", Value = "discount" + " " + @ViewBag.searched + " " + @ViewBag.categoryID}
         }, "Filter by")
-        <input type="submit" value="Filter"/>
+        <input type="submit" value="Filter" />
     }
+}
+
+@if (User.IsInRole("Customer"))
+{
+    <div class="container" style="display: flex; justify-content: flex-end">
+        <p>
+            <a onclick="location.href = '@Url.Action("BasketsPerPerson", "Baskets")'" class="btn btn-default btn-lg" style="padding-top: 15px">
+                <span class="fa fa-shopping-cart"></span>
+                <span style="font-size: 12px; position: absolute; margin-top: -12px; margin-left: -16px; color: red; font-weight: bolder;">
+                    <span id="itemsNum">
+                        @ViewBag.ItemsInBasket
+                    </span>
+                </span>
+                Shopping Cart
+            </a>
+        </p>
+    </div>
 }
 
 <table class="table">
@@ -67,36 +84,104 @@ else
 
     @foreach (var item in Model)
     {
-        <tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.price)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.quantity)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.rating)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.discount)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category.name)
+        </td>
+        @if (ViewBag.isAdmin != null)
+        {
             <td>
-                @Html.DisplayFor(modelItem => item.name)
+                @Html.ActionLink("Edit", "AdsEdit", new { id = item.name }) |
+                @Html.ActionLink("Details", "AdsDetails", new { id = item.name }) |
+                @Html.ActionLink("Delete", "AdsDelete", new { id = item.name })
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.rating)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.discount)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.name)
-            </td>
-            @if (ViewBag.isAdmin != null)
-            {
-                <td>
-                    @Html.ActionLink("Edit", "AdsEdit", new { id = item.name }) |
-                    @Html.ActionLink("Details", "AdsDetails", new { id = item.name }) |
-                    @Html.ActionLink("Delete", "AdsDelete", new { id = item.name })
-                </td>
-            }
-        </tr>
+        }
+        else
+        {
+            <button class="addToBasketBtn btn btn-primary">Add "@item.name" to the basket</button>
+        }
+    </tr>
     }
 </table>
+
+<div id="addConfirm" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>How much do you want to add</h4>
+                <input type="number" name="quantity" />
+                <button class="confirmAddToBasketBtn btn btn-primary">Add</button>
+                <button class="cancelAddToBasketBtn btn btn-primary">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var adName = "";
+        $('.addToBasketBtn').on('click',
+            function (e) {
+                adName = $(this)[0].innerHTML.substring(
+                    $(this)[0].innerHTML.indexOf('"') + 1,
+                    $(this)[0].innerHTML.lastIndexOf('"')
+                );;
+                e.preventDefault();
+                $('#addConfirm').modal('show');
+             
+            });
+
+        $('.confirmAddToBasketBtn').on('click',
+            function (e) {
+                var quantity = $("input[name = quantity]").val();
+                console.log("clicked", quantity);
+                $.ajax({
+                    url: "/Ads/AddToBasket",
+                    type: "POST",
+                    dateType: "json",
+                    data: { adName: adName, quantity: quantity },
+                    success: function (data) {
+                        $('#itemsNum')[0].innerText = parseInt($('#itemsNum')[0].innerText, 10) + data;
+                        $('#addConfirm').modal('hide');
+                        $('input[name = quantity]').val('');
+                        alert("Successfully added");
+                    },
+                    error: function () {
+                        alert("Log in in order to add to your basket");
+                    }
+                });
+            });
+
+        $('.cancelAddToBasketBtn').on('click',
+            function (e) {
+                e.preventDefault();
+                $('#addConfirm').modal('hide');
+                $('input[name = quantity]').val('');
+            });
+    });
+    $(document).ajaxError(function (e, xhr) {
+        //ajax error event handler that looks for either a 401 (regular authorized) or 403 (AjaxAuthorized custom actionfilter).
+        if (xhr.status === 403) {
+            var response = $.parseJSON(xhr.responseText);
+            window.location = response.LogOnUrl;
+        }
+    });
+</script>
