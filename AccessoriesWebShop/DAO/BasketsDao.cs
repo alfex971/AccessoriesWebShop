@@ -38,24 +38,5 @@ namespace AccessoriesWebShop.DAO
 			db.SaveChanges();
 			return basket;
 		}
-
-        public int getNumAdsBaskets(short? userID = 1)
-        {
-            var baskets = db.Baskets.Where(b => b.userID == userID);
-            int retVal = 0;
-
-            foreach (Basket b in baskets)
-            {
-                retVal += b.quantity;
-            }
-
-            return retVal;
-        }
-
-        public int getNextIdNum()
-        {
-            int lastBasketNum = db.Baskets.LastOrDefault().id;
-            return lastBasketNum + 1;
-        }
-    }
+	}
 }
