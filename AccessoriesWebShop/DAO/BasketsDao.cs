@@ -31,12 +31,12 @@ namespace AccessoriesWebShop.DAO
 			return basket;
 		}
 
-		public Basket DeleteBasket(int id)
-		{
-			Basket basket = db.Baskets.Find(id);
-			db.Baskets.Remove(basket);
-			db.SaveChanges();
-			return basket;
-		}
-	}
+        public Basket DeleteBasket(int id, string adName)
+        {
+            Basket basket = db.Baskets.Find(id, adName);
+            db.Baskets.Remove(basket);
+            db.SaveChanges();
+            return basket;
+        }
+    }
 }
