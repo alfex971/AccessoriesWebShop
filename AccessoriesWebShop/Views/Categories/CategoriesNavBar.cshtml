@@ -21,7 +21,28 @@
                     </ul>
                 </li>
             }
-            <li><a  onclick="location.href = '@Url.Action("Index", "Admin")'">Admin</a></li>
+            <li><a onclick="location.href = '@Url.Action("Index", "Admin")'">Admin</a></li>
         </ul>
+        @if (User.Identity.IsAuthenticated)
+        {
+            using (Html.BeginForm("Logout", "Login", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#">Hello @User.Identity.Name!</a>
+                    </li>
+                    <li><a href="javascript:document.getElementById('logoutForm').submit()">Log out</a></li>
+                </ul>
+            }
+        }
+        else
+        {
+            <ul class="nav navbar-nav navbar-right">
+                <li>@Html.ActionLink("Register", "Register", "Login")</li>
+                <li>@Html.ActionLink("Log in", "Login", "Login")</li>
+            </ul>
+        }
     </div>
 </nav>

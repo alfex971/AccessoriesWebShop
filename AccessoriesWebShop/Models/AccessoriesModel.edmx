@@ -127,7 +127,7 @@ warning 6002: The table/view 'accessories.dbo.PaymentDetails' does not have a pr
           <Property Name="id" Type="int" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="phone" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="email" Type="varbinary" MaxLength="100" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="roleID" Type="tinyint" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -489,7 +489,7 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="email" Type="Binary" MaxLength="100" FixedLength="false" Nullable="false" />
+          <Property Name="email" Type="String" Nullable="false" />
           <Property Name="roleID" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Addresses" Relationship="Self.FK_Address_User" FromRole="User" ToRole="Address" />
           <NavigationProperty Name="Baskets" Relationship="Self.FK_Basket_User" FromRole="User" ToRole="Basket" />
