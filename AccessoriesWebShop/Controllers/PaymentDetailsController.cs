@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using AccessoriesWebShop.Models;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.Controllers
 {
@@ -15,9 +16,13 @@ namespace AccessoriesWebShop.Controllers
     {
         private accessoriesEntities db = new accessoriesEntities();
 
-      
-        // GET: PaymentDetails
-        public ActionResult Index()
+	    public PaymentDetailsController()
+	    {
+		    db.ChangeDatabase(userId: "customer");
+	    }
+
+		// GET: PaymentDetails
+		public ActionResult Index()
         {
             var paymentDetails = db.PaymentDetails.Include(p => p.User);
             return View(paymentDetails.ToList());

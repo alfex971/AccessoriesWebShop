@@ -1,0 +1,43 @@
+﻿@model IEnumerable<AccessoriesWebShop.Models.Statistic>
+
+@{
+    ViewBag.Title = "Sales";
+}
+
+<h2>Sales</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.adName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.subCategory)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.quantity)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.price)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.adName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.subCategory)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.price)
+            </td>
+        </tr>
+    }
+
+</table>

@@ -64,9 +64,9 @@ warning 6002: The table/view 'accessories.dbo.AdsHistory' does not have a primar
         </EntityType>
         <EntityType Name="Basket">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="userID" />
+            <PropertyRef Name="adName" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
           <Property Name="userID" Type="int" Nullable="false" />
           <Property Name="adName" Type="varchar" MaxLength="20" Nullable="false" />
           <Property Name="quantity" Type="int" Nullable="false" />
@@ -75,7 +75,7 @@ warning 6002: The table/view 'accessories.dbo.AdsHistory' does not have a primar
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="smallint" Nullable="false" />
+          <Property Name="id" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="35" Nullable="false" />
           <Property Name="parentCategoryID" Type="smallint" />
         </EntityType>
@@ -99,14 +99,9 @@ warning 6002: The table/view 'accessories.dbo.ChangeLog' does not have a primary
           <Property Name="EventDate" Type="datetime" Nullable="false" />
           <Property Name="LoginName" Type="varchar" MaxLength="256" Nullable="false" />
         </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'accessories.dbo.PaymentDetails' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
         <EntityType Name="PaymentDetails">
           <Key>
-            <PropertyRef Name="userID" />
             <PropertyRef Name="cardNumber" />
-            <PropertyRef Name="cvr" />
-            <PropertyRef Name="expiryDate" />
           </Key>
           <Property Name="userID" Type="int" Nullable="false" />
           <Property Name="cardNumber" Type="bigint" Nullable="false" />
@@ -124,7 +119,7 @@ warning 6002: The table/view 'accessories.dbo.PaymentDetails' does not have a pr
           <Key>
             <PropertyRef Name="id" />
           </Key>
-          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="phone" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="email" Type="varchar" MaxLength="100" Nullable="false" />
@@ -304,6 +299,7 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
           <EntitySet Name="Archive" EntityType="Self.Archive" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Basket" EntityType="Self.Basket" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Category" EntityType="Self.Category" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AdsHistory" EntityType="Self.AdsHistory" store:Type="Tables" store:Schema="dbo">
@@ -329,14 +325,6 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
     [ChangeLog].[EventDate] AS [EventDate], 
     [ChangeLog].[LoginName] AS [LoginName]
     FROM [dbo].[ChangeLog] AS [ChangeLog]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="PaymentDetails" EntityType="Self.PaymentDetails" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [PaymentDetails].[userID] AS [userID], 
-    [PaymentDetails].[cardNumber] AS [cardNumber], 
-    [PaymentDetails].[cvr] AS [cvr], 
-    [PaymentDetails].[expiryDate] AS [expiryDate]
-    FROM [dbo].[PaymentDetails] AS [PaymentDetails]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="MostDiscounted" EntityType="Self.MostDiscounted" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -454,9 +442,9 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
         </EntityType>
         <EntityType Name="Basket">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="userID" />
+            <PropertyRef Name="adName" />
           </Key>
-          <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="userID" Type="Int32" Nullable="false" />
           <Property Name="adName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="quantity" Type="Int32" Nullable="false" />
@@ -489,7 +477,7 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
           <Property Name="id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="email" Type="String" Nullable="false" />
+          <Property Name="email" Type="String" Nullable="false" MaxLength="100" Unicode="false" FixedLength="false" />
           <Property Name="roleID" Type="Byte" Nullable="false" />
           <NavigationProperty Name="Addresses" Relationship="Self.FK_Address_User" FromRole="User" ToRole="Address" />
           <NavigationProperty Name="Baskets" Relationship="Self.FK_Basket_User" FromRole="User" ToRole="Basket" />
@@ -536,10 +524,7 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
         </EntityType>
         <EntityType Name="PaymentDetail">
           <Key>
-            <PropertyRef Name="userID" />
             <PropertyRef Name="cardNumber" />
-            <PropertyRef Name="cvr" />
-            <PropertyRef Name="expiryDate" />
           </Key>
           <Property Name="userID" Type="Int32" Nullable="false" />
           <Property Name="cardNumber" Type="Int64" Nullable="false" />
@@ -769,7 +754,6 @@ warning 6002: The table/view 'accessories.dbo.Statistic' does not have a primary
           <EntitySetMapping Name="Baskets">
             <EntityTypeMapping TypeName="accessoriesModel.Basket">
               <MappingFragment StoreEntitySet="Basket">
-                <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="userID" ColumnName="userID" />
                 <ScalarProperty Name="adName" ColumnName="adName" />
                 <ScalarProperty Name="quantity" ColumnName="quantity" />

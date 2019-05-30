@@ -14,7 +14,6 @@ namespace AccessoriesWebShop.Models
     
     public partial class Basket
     {
-        public int id { get; set; }
         public int userID { get; set; }
         public string adName { get; set; }
         public int quantity { get; set; }
