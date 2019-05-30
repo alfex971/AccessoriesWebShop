@@ -1,0 +1,52 @@
+﻿@model IEnumerable<AccessoriesWebShop.Models.PaymentDetail>
+
+<h4 class="mt-4">
+    Your payment cards
+</h4>
+<p class="mt-3 mb-3">
+    @Html.ActionLink("Add new card", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>
+            @Html.DisplayNameFor(model => model.cardNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cvr)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.expiryDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.RadioButtonFor(model => item.userID, "PaymentDetails", Model.First().userID == item.userID && Model.First().cardNumber == item.cardNumber ? new { @checked = true } : null)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cardNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.cvr)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.expiryDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { userID = item.userID, cardNumber = item.cardNumber }) |
+                @Html.ActionLink("Delete", "Delete", new { userID = item.userID, cardNumber = item.cardNumber })
+            </td>
+        </tr>
+    }
+
+</table>

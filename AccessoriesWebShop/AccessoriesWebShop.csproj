@@ -148,12 +148,15 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AdsController.cs" />
     <Compile Include="Controllers\BasketsController.cs" />
     <Compile Include="Controllers\CategoriesController.cs" />
+    <Compile Include="Controllers\CheckoutController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PaymentDetailsController.cs" />
     <Compile Include="DAO\AdsDao.cs" />
     <Compile Include="DAO\BasketsDao.cs" />
     <Compile Include="DAO\CategoriesDao.cs" />
@@ -296,6 +299,17 @@
     <Content Include="Views\Login\Register.cshtml" />
     <Content Include="Views\Login\View.cshtml" />
     <Content Include="Views\Login\Login.cshtml" />
+    <Content Include="Views\PaymentDetails\Create.cshtml" />
+    <Content Include="Views\PaymentDetails\Delete.cshtml" />
+    <Content Include="Views\PaymentDetails\Details.cshtml" />
+    <Content Include="Views\PaymentDetails\Edit.cshtml" />
+    <Content Include="Views\PaymentDetails\Index.cshtml" />
+    <Content Include="Views\Addresses\Create.cshtml" />
+    <Content Include="Views\Addresses\Delete.cshtml" />
+    <Content Include="Views\Addresses\Details.cshtml" />
+    <Content Include="Views\Addresses\Edit.cshtml" />
+    <Content Include="Views\Addresses\Index.cshtml" />
+    <Content Include="Views\Checkout\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
