@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2 class="mt-5">Checkout</h2>
+<hr />
+@{
+    Html.RenderAction("AddressesForUser", "Addresses");
+}
+<hr />
+@{
+    Html.RenderAction("PaymentDetailsForUser", "PaymentDetails");
+}
+
+
+<a onclick="location.href = '@Url.Action("Checkout", "Checkout")'" class="btn btn-primary float-right">Checkout</a>
