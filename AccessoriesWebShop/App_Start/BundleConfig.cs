@@ -23,7 +23,8 @@ namespace AccessoriesWebShop
 					  "~/Scripts/bootstrap.js"));
 
 			bundles.Add(new StyleBundle("~/Content/css").Include(
-					  "~/Content/bootstrap.css",
+					  "~/Content/bootstrap.css", 
+					  "~/content/font-awesome.min.css",
 					  "~/Content/site.css"));
 		}
 	}

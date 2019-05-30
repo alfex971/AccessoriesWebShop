@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using AccessoriesWebShop.Models;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.Controllers
 {
@@ -15,10 +16,13 @@ namespace AccessoriesWebShop.Controllers
     {
         private accessoriesEntities db = new accessoriesEntities();
 
-     
+		public AddressesController()
+		{
+			db.ChangeDatabase(userId: "customer");
+		}
 
-        // GET: Addresses
-        public ActionResult Index()
+		// GET: Addresses
+		public ActionResult Index()
         {
             var addresses = db.Addresses.Include(a => a.User);
             return View(addresses.ToList());

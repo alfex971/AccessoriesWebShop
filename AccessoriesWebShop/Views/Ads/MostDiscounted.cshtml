@@ -1,0 +1,86 @@
+﻿@model IEnumerable<AccessoriesWebShop.Models.MostDiscounted>
+<div class="card-columns">
+    @foreach (var item in Model)
+    {
+        var price = "";
+
+
+        if (item.discount != null)
+        {
+            price = (double)item.price - ((double)item.price * (double)item.discount) + " from " + (double)item.price;
+        }
+        else
+        {
+            price = ((double)item.price).ToString();
+        }
+        <div class="card border-primary">
+            <div class="card-body">
+                <h5 class="card-title">@item.name</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@price</h6>
+                <p class="card-text">@item.description</p>
+                <p class="card-text">Available - @item.quantity</p>
+                <p class="card-text">Rated @item.rating (0-5)</p>
+                <button class="addToBasketBtn btn btn-primary">Add "@item.name" to the basket</button>
+            </div>
+        </div>
+    }
+    <div id="addConfirm" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>How much do you want to add</h4>
+                    <input type="number" name="quantity" />
+                    <button class="confirmAddToBasketBtn btn btn-primary">Add</button>
+                    <button class="cancelAddToBasketBtn btn btn-primary">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var adName = "";
+        $('.addToBasketBtn').on('click',
+            function (e) {
+                adName = $(this)[0].innerHTML.substring(
+                    $(this)[0].innerHTML.indexOf('"') + 1,
+                    $(this)[0].innerHTML.lastIndexOf('"')
+                );;
+                e.preventDefault();
+                $('#addConfirm').modal('show');
+            });
+        $('.confirmAddToBasketBtn').on('click',
+            function (e) {
+                var quantity = $("input[name = quantity]").val();
+                console.log("clicked", quantity);
+                $.ajax({
+                    url: "/Ads/AddToBasket",
+                    type: "POST",
+                    dateType: "json",
+                    data: { adName: adName, quantity: quantity },
+                    success: function (data) {
+                        $('#addConfirm').modal('hide');
+                        $('input[name = quantity]').val('');
+                        alert("Successfully added");
+                    },
+                    error: function () {
+                        alert("Log in in order to add to your basket");
+                    }
+                });
+            });
+        $('.cancelAddToBasketBtn').on('click',
+            function (e) {
+                e.preventDefault();
+                $('#addConfirm').modal('hide');
+                $('input[name = quantity]').val('');
+            });
+    });
+    $(document).ajaxError(function (e, xhr) {
+        //ajax error event handler that looks for either a 401 (regular authorized) or 403 (AjaxAuthorized custom actionfilter).
+        if (xhr.status === 403) {
+            var response = $.parseJSON(xhr.responseText);
+            window.location = response.LogOnUrl;
+        }
+    });
+</script>

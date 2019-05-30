@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -7,25 +8,46 @@ using System.Web;
 using System.Web.Mvc;
 using AccessoriesWebShop.DAO;
 using AccessoriesWebShop.Models;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.Controllers
 {
-    public class AdminController : Controller
+	[Authorize(Roles = "Admin")]
+	public class AdminController : Controller
 	{
 		private accessoriesEntities db = new accessoriesEntities();
 		private AdsDao adsDao = new AdsDao();
 
-		[Authorize(Roles = "Admin")]
+		public AdminController()
+		{
+			db.ChangeDatabase(userId: "manager");
+		}
+
 		// GET: Admin
 		public ActionResult Index()
 		{
-			var ads = adsDao.GetAds();
-			ViewBag.searched = "";
+			return View("~/Views/Home/Index.cshtml");
+		}
+
+		[HttpPost]
+		public ActionResult SearchByString(string search)
+		{
+			var ads = adsDao.SearchAdsByString(search);
+			ViewBag.searched = search;
 			ViewBag.categoryID = 0;
+			ViewData["filterName"] = "price(low - high)";
+
+			ViewBag.ItemsInBasket = 0;
+
 			ViewBag.isAdmin = true;
-			ViewBag.userEmail = User.Identity.Name;
-            return View("~/Views/Ads/Index.cshtml", ads);
-        }
+			return View("~/Views/Ads/Index.cshtml", ads);
+		}
+
+		public ActionResult Sales()
+		{
+			var stats = db.Statistics;
+			return View(stats);
+		}
 
 		// GET: Ads/Details/5
 		public ActionResult AdsDetails(string id)
@@ -58,7 +80,8 @@ namespace AccessoriesWebShop.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var insertedAd = adsDao.InsertAd(ad);
+				var insertedAd = db.Ads.Add(ad);
+				db.SaveChanges();
 				if (insertedAd != null)
 				{
 					return RedirectToAction("Index");
@@ -94,8 +117,9 @@ namespace AccessoriesWebShop.Controllers
 		{
 			if (ModelState.IsValid)
 			{
-				var updatedAd = adsDao.UpdateAd(ad);
-				if (updatedAd != null)
+				db.Entry(ad).State = EntityState.Modified;
+				db.SaveChanges();
+				if (ad != null)
 				{
 					return RedirectToAction("Index");
 				}
@@ -146,7 +170,9 @@ namespace AccessoriesWebShop.Controllers
 		[ValidateAntiForgeryToken]
 		public ActionResult AdsDeleteConfirmed(string id)
 		{
-			adsDao.DeleteAd(id);
+			Ad ad = db.Ads.Find(id);
+			db.Ads.Remove(ad);
+			db.SaveChanges();
 			return RedirectToAction("Index");
 		}
 

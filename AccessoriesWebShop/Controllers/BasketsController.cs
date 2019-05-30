@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using AccessoriesWebShop.DAO;
 using AccessoriesWebShop.Models;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.Controllers
 {
@@ -17,8 +18,13 @@ namespace AccessoriesWebShop.Controllers
         private accessoriesEntities db = new accessoriesEntities();
         private BasketsDao basketDao = new BasketsDao();
 
-        // GET: Baskets
-        public ActionResult Index()
+	    public BasketsController()
+	    {
+		    db.ChangeDatabase(userId: "customer");
+	    }
+
+		// GET: Baskets
+		public ActionResult Index()
         {
             var baskets = db.Baskets.Include(b => b.Ad).Include(b => b.User);
             return View(baskets.ToList());

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.RoleProvider
 {
@@ -17,6 +18,14 @@ namespace AccessoriesWebShop.RoleProvider
 		{
 			accessoriesEntities db = new accessoriesEntities();
 			var roleId = db.Users.FirstOrDefault(u => u.email == username).roleID;
+			if (roleId == 1)
+			{
+				db.ChangeDatabase(null, null, "customer", "pass");
+			}
+			else
+			{
+				db.ChangeDatabase(null, null, "manager", "pass");
+			}
 			var role = db.Roles.FirstOrDefault(r => r.id == roleId).name;
 
 			return new[] { role };

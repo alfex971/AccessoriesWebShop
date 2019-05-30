@@ -3,14 +3,12 @@
 
 @foreach (var item in Model)
 {
-    <li>
-        @if (Request.Url.AbsolutePath.Split('/')[1] == "Admin")
-        {
-            <a onclick="location.href = '@Url.Action("SearchBySubCategory", "Admin", new {id = item.id})'">@item.name </a>
-        }
-        else
-        {
-            <a onclick="location.href = '@Url.Action("SearchBySubCategory", "Ads", new {id = item.id})'">@item.name </a>
-        }
-    </li>
+    if (Request.Url.AbsolutePath.Split('/')[1] == "Admin")
+    {
+        <a class="dropdown-item" onclick="location.href = '@Url.Action("SearchBySubCategory", "Admin", new {id = item.id})'">@item.name </a>
+    }
+    else
+    {
+        <a class="dropdown-item" onclick="location.href = '@Url.Action("SearchBySubCategory", "Ads", new {id = item.id})'">@item.name </a>
+    }
 }

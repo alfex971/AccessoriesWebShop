@@ -4,12 +4,18 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using AccessoriesWebShop.Models;
+using AccessoriesWebShop.Utils;
 
 namespace AccessoriesWebShop.DAO
 {
 	public class BasketsDao
 	{
 		private accessoriesEntities db = new accessoriesEntities();
+
+		public BasketsDao()
+		{
+			db.ChangeDatabase(userId: "customer");
+		}
 
 		public Basket GetBasket(int? id)
 		{

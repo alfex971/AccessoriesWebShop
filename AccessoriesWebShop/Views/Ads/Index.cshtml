@@ -1,10 +1,17 @@
-﻿@model IEnumerable<AccessoriesWebShop.Models.Ad>
+﻿@using Antlr.Runtime
+@model IEnumerable<AccessoriesWebShop.Models.Ad>
 
 @{
     ViewBag.Title = "Index";
 }
-
-<h2>Index</h2>
+@if (ViewBag.searched == "")
+{
+    <h2 class="mt-3">Showing results for <strong>@ViewBag.categoryName</strong> category</h2>
+}
+else
+{
+    <h2 class="mt-3">Resuls for searching <strong>@ViewBag.searched</strong></h2>
+}
 
 @if (ViewBag.isAdmin != null)
 {
@@ -12,7 +19,7 @@
         @Html.ActionLink("Create New", "AdsCreate")
     </p>
 
-    using (Html.BeginForm("Filter", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    using (Html.BeginForm("Filter", "Admin", FormMethod.Post, new { enctype = "multipart/form-data", @class = "input-group mt-5 mb-5 d-flex" }))
     {
         @Html.DropDownList("Filter", new List<SelectListItem>
         {
@@ -20,13 +27,13 @@
             new SelectListItem {Text = "price (high - low)", Value = "priceDesc" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "rating", Value = "rating" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "discount", Value = "discount" + " " + @ViewBag.searched + " " + @ViewBag.categoryID}
-        }, "Filter by")
-        <input type="submit" value="Filter" />
+        }, "Sort by", new { @class = "form-control ml-auto" })
+        <input type="submit" class="btn btn-primary" value="Sort" />
     }
 }
 else
 {
-    using (Html.BeginForm("Filter", "Ads", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    using (Html.BeginForm("Filter", "Ads", FormMethod.Post, new { enctype = "multipart/form-data", @class = "input-group mt-5 mb-5 d-flex" }))
     {
         @Html.DropDownList("Filter", new List<SelectListItem>
         {
@@ -34,8 +41,8 @@ else
             new SelectListItem {Text = "price (high - low)", Value = "priceDesc" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "rating", Value = "rating" + " " + @ViewBag.searched + " " + @ViewBag.categoryID},
             new SelectListItem {Text = "discount", Value = "discount" + " " + @ViewBag.searched + " " + @ViewBag.categoryID}
-        }, "Filter by")
-        <input type="submit" value="Filter" />
+        }, "Sort by", new { @class = "form-control ml-auto" })
+        <input type="submit" class="btn btn-primary" value="Sort" />
     }
 }
 
@@ -56,80 +63,48 @@ else
     </div>
 }
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.description)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.price)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.quantity)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.rating)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.discount)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Category.name)
-        </th>
-        <th></th>
-    </tr>
-
+<div class="card-rows">
     @foreach (var item in Model)
     {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.description)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.price)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.quantity)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.rating)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.discount)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Category.name)
-        </td>
-        @if (ViewBag.isAdmin != null)
+        var price = "";
+
+
+        if (item.discount != null)
         {
-            <td>
-                @Html.ActionLink("Edit", "AdsEdit", new { id = item.name }) |
-                @Html.ActionLink("Details", "AdsDetails", new { id = item.name }) |
-                @Html.ActionLink("Delete", "AdsDelete", new { id = item.name })
-            </td>
+            price = (double)item.price - (double)item.price * (double)item.discount + " from " + (double)item.price;
         }
         else
         {
-            <button class="addToBasketBtn btn btn-primary">Add "@item.name" to the basket</button>
+            price = ((double)item.price).ToString();
         }
-    </tr>
+        <div class="card border-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@item.name</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@price</h6>
+                <p class="card-text">@item.description</p>
+                <p class="card-text">Available - @item.quantity</p>
+                <p class="card-text">Rated @item.rating (0-5)</p>
+                @if (ViewBag.isAdmin != null)
+                {
+                    <a onclick="location.href = '@Url.Action("AdsEdit", new { id = item.name })'" class="btn btn-primary">Edit</a>
+                    <a onclick="location.href = '@Url.Action("AdsDelete", new { id = item.name })'" class="btn btn-primary">Delete</a>
+                }
+                else
+                {
+                    <button class="addToBasketBtn btn btn-primary">Add "@item.name" to the basket</button>
+                }
+            </div>
+        </div>
     }
-</table>
-
-<div id="addConfirm" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h4>How much do you want to add</h4>
-                <input type="number" name="quantity" />
-                <button class="confirmAddToBasketBtn btn btn-primary">Add</button>
-                <button class="cancelAddToBasketBtn btn btn-primary">Cancel</button>
+    <div id="addConfirm" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>How much do you want to add</h4>
+                    <input type="number" name="quantity" />
+                    <button class="confirmAddToBasketBtn btn btn-primary">Add</button>
+                    <button class="cancelAddToBasketBtn btn btn-primary">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
@@ -146,7 +121,6 @@ else
                 );;
                 e.preventDefault();
                 $('#addConfirm').modal('show');
-             
             });
 
         $('.confirmAddToBasketBtn').on('click',
@@ -171,11 +145,11 @@ else
             });
 
         $('.cancelAddToBasketBtn').on('click',
-            function (e) {
-                e.preventDefault();
-                $('#addConfirm').modal('hide');
-                $('input[name = quantity]').val('');
-            });
+                function (e) {
+                    e.preventDefault();
+                    $('#addConfirm').modal('hide');
+                    $('input[name = quantity]').val('');
+                });
     });
     $(document).ajaxError(function (e, xhr) {
         //ajax error event handler that looks for either a 401 (regular authorized) or 403 (AjaxAuthorized custom actionfilter).
